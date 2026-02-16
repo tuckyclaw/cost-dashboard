@@ -1,0 +1,44 @@
+{
+  "openclaw": {
+    "sessions_path": "/root/.openclaw/agents/main/sessions",
+    "watch_interval_ms": 5000,
+    "process_existing": true,
+    "max_file_age_days": 30
+  },
+  "cost_calculation": {
+    "default_cost_per_token": 0.01,
+    "round_decimals": 6,
+    "currency": "USD"
+  },
+  "task_categorization": {
+    "routine_keywords": ["heartbeat", "calendar", "email", "check", "reminder"],
+    "analysis_keywords": ["briefing", "market", "security", "research", "analysis", "report"],
+    "development_keywords": ["code", "pr", "review", "technical", "github", "jira", "debug", "test"],
+    "strategy_keywords": ["strategy", "brainstorming", "planning", "decision", "roadmap"],
+    "content_keywords": ["linkedin", "post", "writing", "social", "content", "blog", "article"],
+    "search_keywords": ["search", "browser", "web_search", "google", "lookup", "find"],
+    "audio_keywords": ["audio", "transcription", "voice", "tts", "speech", "listen"]
+  },
+  "logging": {
+    "level": "info",
+    "file": "logs/collector.log",
+    "max_size_mb": 10,
+    "retention_days": 7
+  },
+  "database": {
+    "path": "database/metrics.json",
+    "backup_enabled": true,
+    "backup_interval_hours": 24,
+    "max_metrics_per_day": 1000
+  },
+  "api": {
+    "enabled": true,
+    "port": 3001,
+    "cors_origins": ["http://localhost:3000", "http://127.0.0.1:3000"]
+  },
+  "dashboard": {
+    "enabled": true,
+    "port": 3000,
+    "refresh_interval_seconds": 30
+  }
+}
