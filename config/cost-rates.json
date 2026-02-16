@@ -1,0 +1,119 @@
+{
+  "providers": {
+    "anthropic": {
+      "baseUrl": "https://api.anthropic.com",
+      "models": {
+        "claude-opus-4-5-20251101": {
+          "input": 0.015,
+          "output": 0.075,
+          "cacheRead": 0.001875,
+          "cacheWrite": 0.01875,
+          "contextWindow": 200000
+        },
+        "claude-sonnet-4-5-20251101": {
+          "input": 0.003,
+          "output": 0.015,
+          "cacheRead": 0.000375,
+          "cacheWrite": 0.00375,
+          "contextWindow": 200000
+        },
+        "claude-haiku-4-5-20251001": {
+          "input": 0.0008,
+          "output": 0.004,
+          "cacheRead": 0.0001,
+          "cacheWrite": 0.001,
+          "contextWindow": 200000
+        }
+      }
+    },
+    "google": {
+      "baseUrl": "https://generativelanguage.googleapis.com/v1beta",
+      "models": {
+        "gemini-2.5-flash": {
+          "input": 0.0001,
+          "output": 0.0004,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "contextWindow": 1000000
+        }
+      }
+    },
+    "openai": {
+      "baseUrl": "https://api.openai.com/v1",
+      "models": {
+        "codex/gpt-5.2": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "contextWindow": 256000
+        },
+        "gpt-4o-realtime-preview": {
+          "input": 0.005,
+          "output": 0.02,
+          "cacheRead": 0.0025,
+          "cacheWrite": 0,
+          "contextWindow": 128000
+        }
+      }
+    },
+    "deepseek": {
+      "baseUrl": "https://api.deepseek.com/v1",
+      "models": {
+        "deepseek-chat": {
+          "input": 0.00014,
+          "output": 0.00028,
+          "cacheRead": 0.000014,
+          "cacheWrite": 0.00014,
+          "contextWindow": 64000
+        }
+      }
+    },
+    "xai": {
+      "baseUrl": "https://api.x.ai/v1",
+      "models": {
+        "grok-1": {
+          "input": 0.005,
+          "output": 0.015,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "contextWindow": 128000
+        }
+      }
+    },
+    "moonshot": {
+      "baseUrl": "https://api.moonshot.ai/v1",
+      "models": {
+        "kimi-k2.5": {
+          "input": 0.00012,
+          "output": 0.00012,
+          "cacheRead": 0.000012,
+          "cacheWrite": 0.00012,
+          "contextWindow": 256000
+        }
+      }
+    },
+    "groq": {
+      "baseUrl": "https://api.groq.com/openai/v1",
+      "models": {
+        "whisper-large-v3": {
+          "input": 0.000111,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "contextWindow": 10000
+        }
+      }
+    }
+  },
+  "taskCategories": {
+    "routine": ["heartbeat", "calendar", "email", "agenda", "check"],
+    "analysis": ["briefing", "market", "security", "analysis", "research"],
+    "development": ["code", "pr", "review", "technical", "configuration", "setup"],
+    "strategy": ["strategy", "brainstorming", "planning", "decision"],
+    "content": ["linkedin", "post", "content", "writing", "social"],
+    "search": ["web_search", "search", "fetch", "browser"],
+    "audio": ["transcription", "tts", "audio", "voice"],
+    "other": ["unknown", "misc", "general"]
+  }
+}

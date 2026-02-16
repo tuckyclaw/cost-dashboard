@@ -1,0 +1,57 @@
+{
+  "name": "openclaw-cost-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard de métricas de costos para OpenClaw - Monitoreo inteligente de uso de modelos de IA",
+  "main": "index.js",
+  "scripts": {
+    "start": "./quick-start.sh",
+    "collector": "node collector/openclaw-collector.js",
+    "collector:simple": "node collector/simple-collector.js",
+    "api": "node api/simple-server.js",
+    "api:full": "node api/server.js",
+    "web": "node simple-web-server.js",
+    "dev": "concurrently \"npm run collector\" \"npm run api\" \"npm run web\"",
+    "test": "node verify.sh",
+    "setup": "npm install",
+    "clean": "rm -rf node_modules logs/*.out database/*.json",
+    "backup": "./scripts/backup-database.sh",
+    "logs": "tail -f logs/collector.out logs/api.out logs/web.out"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "winston": "^3.11.0",
+    "chokidar": "^3.5.3",
+    "cors": "^2.8.5",
+    "moment": "^2.29.4",
+    "node-cron": "^3.0.3",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "openclaw",
+    "cost",
+    "dashboard",
+    "metrics",
+    "monitoring",
+    "ai",
+    "llm",
+    "analytics",
+    "tucky"
+  ],
+  "author": "Tucky <tucky@strike.sh>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tuckyclaw/cost-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tuckyclaw/cost-dashboard/issues"
+  },
+  "homepage": "https://github.com/tuckyclaw/cost-dashboard#readme",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  }
+}

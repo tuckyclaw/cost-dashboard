@@ -1,0 +1,126 @@
+                                <td>${model.model}</td>
+                                <td><span class="badge badge-primary">${model.provider}</span></td>
+                                <td>${formatNumber(model.task_count)}</td>
+                                <td>${formatNumber(model.total_input_tokens + model.total_output_tokens)}</td>
+                                <td style="font-weight: 600;">${formatCurrency(model.total_cost)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            // Tabla de tareas
+            const tasksTable = document.getElementById('tasksTable');
+            tasksTable.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Categoría</th>
+                            <th>Tareas</th>
+                            <th>Costo</th>
+                            <th>Tokens/Tarea</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tasksData.tasks.map(task => `
+                            <tr>
+                                <td style="text-transform: capitalize;">${task.task_category}</td>
+                                <td>${formatNumber(task.task_count)}</td>
+                                <td style="font-weight: 600;">${formatCurrency(task.total_cost)}</td>
+                                <td>${formatNumber(Math.round(task.avg_tokens_per_task))}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            // Tabla diaria
+            const dailyTable = document.getElementById('dailyTable');
+            dailyTable.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Costo Total</th>
+                            <th>Tokens</th>
+                            <th>Tareas</th>
+                            <th>Modelos Usados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${dailyData.daily_summaries.map(day => `
+                            <tr>
+                                <td>${day.date}</td>
+                                <td style="font-weight: 600;">${formatCurrency(day.total_cost)}</td>
+                                <td>${formatNumber(day.total_tokens)}</td>
+                                <td>${formatNumber(day.tasks_count)}</td>
+                                <td style="font-size: 12px; color: #666;">
+                                    ${day.models_used.split(',').slice(0, 3).join(', ')}
+                                    ${day.models_used.split(',').length > 3 ? '...' : ''}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+        
+        // Exportar datos a CSV
+        function exportData() {
+            const timeRange = document.getElementById('timeRange').value;
+            const url = `${API_BASE}/metrics?timeRange=${timeRange}&limit=1000`;
+            
+            axios.get(url)
+                .then(response => {
+                    const metrics = response.data.metrics;
+                    if (metrics.length === 0) {
+                        alert('No hay datos para exportar');
+                        return;
+                    }
+                    
+                    // Crear CSV
+                    const headers = ['Fecha', 'Modelo', 'Proveedor', 'Tokens Input', 'Tokens Output', 'Costo', 'Categoría', 'Descripción'];
+                    const csvRows = [
+                        headers.join(','),
+                        ...metrics.map(m => [
+                            m.timestamp,
+                            m.model,
+                            m.provider,
+                            m.input_tokens,
+                            m.output_tokens,
+                            m.cost_usd,
+                            m.task_category,
+                            `"${m.task_description.replace(/"/g, '""')}"`
+                        ].join(','))
+                    ];
+                    
+                    const csvContent = csvRows.join('\n');
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `cost-dashboard-${timeRange}-${new Date().toISOString().split('T')[0]}.csv`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    showError(`Error exportando datos: ${error.message}`);
+                });
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            document.getElementById('timeRange').addEventListener('change', loadData);
+            
+            // Actualizar cada 5 minutos
+            setInterval(loadData, 5 * 60 * 1000);
+            
+            // Actualizar hora actual
+            setInterval(() => {
+                document.getElementById('currentTime').textContent = new Date().toLocaleString();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
