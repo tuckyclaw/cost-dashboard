@@ -206,17 +206,35 @@ function App() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Tendencias de Costo */}
           <div className="card">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Tendencias de Costo</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Tendencias de Costo</h3>
+              <div className="text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded">
+                <span className="inline-block w-3 h-3 bg-blue-500 rounded-full mr-1"></span>
+                Costo Total (USD) | 
+                <span className="inline-block w-3 h-3 bg-green-500 rounded-full mx-1 ml-3"></span>
+                Número de Tareas
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              Muestra la evolución del costo (eje izquierdo) y volumen de tareas (eje derecho) a lo largo del tiempo.
+            </p>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={trends}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="period" />
-                  <YAxis />
-                  <Tooltip formatter={(value) => [formatCurrency(value), 'Costo']} />
+                  <YAxis label={{ value: 'Costo (USD)', angle: -90, position: 'insideLeft' }} />
+                  <YAxis yAxisId={1} orientation="right" label={{ value: 'Tareas', angle: 90, position: 'insideRight' }} />
+                  <Tooltip 
+                    formatter={(value, name) => {
+                      if (name === 'Costo Total') return [formatCurrency(value), 'Costo'];
+                      return [value, 'Tareas'];
+                    }}
+                    labelFormatter={(label) => `Fecha: ${label}`}
+                  />
                   <Legend />
-                  <Line type="monotone" dataKey="total_cost" stroke="#3b82f6" name="Costo Total" />
-                  <Line type="monotone" dataKey="task_count" stroke="#10b981" name="Tareas" yAxisId={1} />
+                  <Line type="monotone" dataKey="total_cost" stroke="#3b82f6" name="Costo Total (USD)" strokeWidth={2} />
+                  <Line type="monotone" dataKey="task_count" stroke="#10b981" name="Tareas" yAxisId={1} strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -229,7 +247,7 @@ function App() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={models.slice(0, 6)}
+                    data={models.slice(0, 6).map(m => ({...m, name: `${m.model} (${m.provider})`}))}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -242,7 +260,10 @@ function App() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => [formatCurrency(value), 'Costo']} />
+                  <Tooltip 
+                    formatter={(value) => [formatCurrency(value), 'Costo']}
+                    labelFormatter={(label) => `Modelo: ${label}`}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -285,6 +306,25 @@ function App() {
           {/* Tareas por Categoría */}
           <div className="card">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Tareas por Categoría</h3>
+            <div className="h-64 mb-6">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={tasks}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="task_category" />
+                  <YAxis />
+                  <Tooltip 
+                    formatter={(value, name) => {
+                      if (name === 'Costo') return [formatCurrency(value), 'Costo'];
+                      return [value, 'Tareas'];
+                    }}
+                    labelFormatter={(label) => `Categoría: ${label}`}
+                  />
+                  <Legend />
+                  <Bar dataKey="task_count" fill="#10b981" name="Número de Tareas" />
+                  <Bar dataKey="total_cost" fill="#3b82f6" name="Costo Total (USD)" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
             <div className="table-container">
               <table className="table">
                 <thead>

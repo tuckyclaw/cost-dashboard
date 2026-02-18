@@ -21,28 +21,28 @@ function formatDateRange(timeRange) {
   switch (timeRange) {
     case 'hour':
       return {
-        start: now.clone().subtract(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
-        end: now.format('YYYY-MM-DD HH:mm:ss')
+        start: now.clone().subtract(1, 'hour').toISOString(),
+        end: now.toISOString()
       };
     case 'day':
       return {
-        start: now.clone().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-        end: now.format('YYYY-MM-DD HH:mm:ss')
+        start: now.clone().subtract(1, 'day').toISOString(),
+        end: now.toISOString()
       };
     case 'week':
       return {
-        start: now.clone().subtract(1, 'week').format('YYYY-MM-DD HH:mm:ss'),
-        end: now.format('YYYY-MM-DD HH:mm:ss')
+        start: now.clone().subtract(1, 'week').toISOString(),
+        end: now.toISOString()
       };
     case 'month':
       return {
-        start: now.clone().subtract(1, 'month').format('YYYY-MM-DD HH:mm:ss'),
-        end: now.format('YYYY-MM-DD HH:mm:ss')
+        start: now.clone().subtract(1, 'month').toISOString(),
+        end: now.toISOString()
       };
     default:
       return {
-        start: now.clone().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-        end: now.format('YYYY-MM-DD HH:mm:ss')
+        start: now.clone().subtract(1, 'day').toISOString(),
+        end: now.toISOString()
       };
   }
 }
@@ -332,7 +332,14 @@ app.get('/api/daily', (req, res) => {
   const { limit = 30 } = req.query;
   
   const query = `
-    SELECT * FROM daily_summary 
+    SELECT 
+      DATE(timestamp) as date,
+      SUM(cost_usd) as total_cost,
+      SUM(input_tokens + output_tokens) as total_tokens,
+      COUNT(*) as task_count,
+      GROUP_CONCAT(DISTINCT model) as models_used
+    FROM metrics
+    GROUP BY DATE(timestamp)
     ORDER BY date DESC 
     LIMIT ?
   `;

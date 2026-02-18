@@ -125,11 +125,14 @@ function processSessionFile(filePath) {
         const data = JSON.parse(line);
         
         // Extraer información relevante
-        if (data.role === 'assistant' && data.model) {
-          const model = data.model;
-          const inputTokens = data.usage?.prompt_tokens || data.usage?.input_tokens || 0;
-          const outputTokens = data.usage?.completion_tokens || data.usage?.output_tokens || 0;
-          const contentText = data.content || '';
+        const message = data.message || data;
+        if (message.role === 'assistant' && message.model) {
+          const model = message.model;
+          const inputTokens = message.usage?.input || message.usage?.prompt_tokens || message.usage?.input_tokens || data.usage?.input || 0;
+          const outputTokens = message.usage?.output || message.usage?.completion_tokens || message.usage?.output_tokens || data.usage?.output || 0;
+          const contentText = Array.isArray(message.content) 
+            ? message.content.map(c => c.text || '').join(' ')
+            : message.content || '';
           
           // Categorizar tarea
           const taskCategory = categorizeTask(contentText);
@@ -152,7 +155,7 @@ function processSessionFile(filePath) {
               costInfo.cost,
               taskCategory,
               contentText.substring(0, 200), // Primeros 200 chars
-              JSON.stringify(data)
+              JSON.stringify(message)
             ],
             (err) => {
               if (err) {
